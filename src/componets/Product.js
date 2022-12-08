@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../css/main.css";
 
-function Product() {
+function Product({ User }) {
   const navigate = useNavigate();
   const [data, setdata] = useState({});
   const [comments, setcomments] = useState({});
@@ -27,6 +27,10 @@ function Product() {
   useEffect(() => {
     product();
   }, []);
+
+  //////////////////sat localStorage
+  localStorage.setItem("User", JSON.stringify(User));
+  //////////////////
 
   return (
     <div className="mt-20 flex-wrap flex justify-around">

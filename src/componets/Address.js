@@ -1,44 +1,93 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../css/main.css";
 
-function Address() {
-  return (
-    <div className="mt-32 flex justify-center">
-      <div className=" flex justify-center w-full lg:w-9/12 xl:w-7/12 shadow-lg">
-        <div className="card w-full bg-primary text-primary-content">
-          <div className="card-body">
-            <div className="block lg:flex lg:items-center text-sm">
-              <label className="lg:w-2/12 mb-2 flex">City :</label>
-              <div className="grid lg:w-11/12 h-10 card bg-base-300 rounded-lg place-items-center justify-start pl-5 overflow-auto">
-                City
+function Address({ setaddress, address }) {
+  const navigate = useNavigate();
+  const [Information, setInformation] = useState({
+    City: "",
+    Address: "",
+    PostalCode: "",
+    PhoneNumber: "",
+  });
+  function information() {
+    localStorage.setItem("Address", JSON.stringify(address));
+    setaddress([Information]);
+    navigate("/Checkout");
+  }
+  //////////////////get localStorage
+  let StorageorderArry = JSON.parse(localStorage.getItem("orderArry"));
+  let Storageaddress = JSON.parse(localStorage.getItem("Address"));
+  /////////////////
+  return StorageorderArry.map((item, index) => {
+    return (
+      <div className="mt-32 flex justify-center">
+        <div className=" flex justify-center w-full lg:w-9/12 xl:w-7/12 shadow-lg">
+          <div className="card w-full bg-primary text-primary-content">
+            <div className="card-body">
+              <div className="block lg:flex lg:items-center text-sm">
+                <label className="lg:w-2/12 mb-2 flex">City :</label>
+                <input
+                  className="grid lg:w-11/12 h-10 card bg-base-300 rounded-lg place-items-center justify-start pl-5 overflow-auto"
+                  onChange={(e) =>
+                    setInformation((last) => {
+                      const help = { ...last };
+                      help.City = e.target.value;
+                      return { ...help };
+                    })
+                  }
+                />
               </div>
-            </div>
-            <div className="block lg:flex lg:items-center text-sm">
-              <label className="lg:w-2/12 mb-2 flex">Address :</label>
-              <div className="grid lg:w-11/12 h-10 card bg-base-300 rounded-lg place-items-center justify-start pl-5 overflow-auto">
-                Address
+              <div className="block lg:flex lg:items-center text-sm">
+                <label className="lg:w-2/12 mb-2 flex">Address :</label>
+                <input
+                  className="grid lg:w-11/12 h-10 card bg-base-300 rounded-lg place-items-center justify-start pl-5 overflow-auto"
+                  onChange={(e) =>
+                    setInformation((last) => {
+                      const help = { ...last };
+                      help.Address = e.target.value;
+                      return { ...help };
+                    })
+                  }
+                />
               </div>
-            </div>
-            <div className="block lg:flex lg:items-center text-sm">
-              <label className="lg:w-2/12 mb-2 flex">Postal Code :</label>
-              <div className="grid lg:w-11/12 h-10 card bg-base-300 rounded-lg place-items-center justify-start pl-5 overflow-auto">
-                Postal Code
+              <div className="block lg:flex lg:items-center text-sm">
+                <label className="lg:w-2/12 mb-2 flex">Postal Code :</label>
+                <input
+                  className="grid lg:w-11/12 h-10 card bg-base-300 rounded-lg place-items-center justify-start pl-5 overflow-auto"
+                  onChange={(e) =>
+                    setInformation((last) => {
+                      const help = { ...last };
+                      help.PostalCode = e.target.value;
+                      return { ...help };
+                    })
+                  }
+                />
               </div>
-            </div>
-            <div className="block lg:flex lg:items-center text-sm">
-              <label className="lg:w-2/12 mb-2 flex">Phone Number :</label>
-              <div className="grid lg:w-11/12 h-10 card bg-base-300 rounded-lg place-items-center justify-start pl-5 overflow-auto">
-                Phone Number
+              <div className="block lg:flex lg:items-center text-sm">
+                <label className="lg:w-2/12 mb-2 flex">Phone Number :</label>
+                <input
+                  className="grid lg:w-11/12 h-10 card bg-base-300 rounded-lg place-items-center justify-start pl-5 overflow-auto"
+                  onChange={(e) =>
+                    setInformation((last) => {
+                      const help = { ...last };
+                      help.PhoneNumber = e.target.value;
+                      return { ...help };
+                    })
+                  }
+                />
               </div>
-            </div>
-            <div className="card-actions justify-center mt-5">
-              <button className="btn w-2/12">Next</button>
+              <div className="card-actions justify-center mt-5">
+                <button className="btn w-2/12" onClick={() => information()}>
+                  Next
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  });
 }
 
 export default Address;

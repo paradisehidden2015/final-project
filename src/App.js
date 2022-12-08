@@ -20,14 +20,18 @@ import { useState } from "react";
 import NotFound from "./componets/NotFound";
 
 function App() {
-  const [login, setlogin] = useState(false);
+  let storageUser = JSON.parse(localStorage.getItem("User"));
+  const [User, setUser] = useState(storageUser ? storageUser : []);
   let Storage = JSON.parse(localStorage.getItem("orderArray"));
   const [orderArray, setorderArray] = useState(Storage ? Storage : []);
+  let Storageaddress = JSON.parse(localStorage.getItem("Address"));
+  const [address, setaddress] = useState(Storageaddress ? Storageaddress : []);
+  const [login, setlogin] = useState(User.length ? true : false);
   return (
     <div className="App">
       <Navbar login={login} orderArray={orderArray} />
       <Routes>
-        <Route path="/" element={<Product />} />
+        <Route path="/" element={<Product User={User} />} />
         <Route
           path="/ProductId"
           element={
@@ -39,10 +43,16 @@ function App() {
           }
         />
         <Route path="/Cart" element={<Cart />} />
-        <Route path="/Login" element={<Login />} />
+        <Route
+          path="/Login"
+          element={<Login setlogin={setlogin} setUser={setUser} User={User} />}
+        />
         <Route path="/SingUp" element={<SingUp />} />
         <Route path="/Profile" element={<Profile />} />
-        <Route path="/Address" element={<Address />} />
+        <Route
+          path="/Address"
+          element={<Address setaddress={setaddress} address={address} />}
+        />
         <Route path="/Checkout" element={<Checkout />} />
         <Route
           path="/Orders"

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../css/main.css";
 
 function Checkout() {
+  const [situation, setSituation] = useState(false)
   return (
     <div className="pt-20 pb-24">
       <div className="item">
@@ -42,7 +43,7 @@ function Checkout() {
                 </div>
               </div>
               <div className="title lg:w-40">
-                <button className="btn btn-outline btn-circle btn-error text-xl btn-sm hover:shadow-md hover:shadow-red-900 hover:scale-125 btn-disabled">
+                <button className={`btn btn-outline btn-circle btn-error text-xl btn-sm hover:shadow-md hover:shadow-red-900 hover:scale-125${} btn-disabled`}>
                   -
                 </button>
                 <p className="inline text-3xl mx-7">12</p>
@@ -127,9 +128,10 @@ function Checkout() {
                   <label className="block text-left mb-2 lg:w-3/12 2xl:w-5/12 leading-9">
                     PaymentMethod :
                   </label>
-                  <div className="block leading-10 mb-5 text-left lg:w-9/12 2xl:grid 2xl:w-6/12 h-10 bg-base-300 rounded-lg place-items-center justify-start pl-5 overflow-auto">
-                    PaymentMethod
-                  </div>
+                  <select className="select select-bordered block leading-10 mb-5 text-left w-full lg:w-9/12 2xl:grid 2xl:w-6/12 h-10 bg-base-300 rounded-lg place-items-center justify-start pl-5 overflow-auto">
+                    <option>Pay at home</option>
+                    <option>online payment</option>
+                  </select>
                 </div>
               </div>
             </div>

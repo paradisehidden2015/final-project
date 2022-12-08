@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import "../css/main.css";
 
 function Profile() {
+  //////////////////get localStorage
+  // let storage = JSON.parse(localStorage.getItem("orderArray"));
+  let storageUser = JSON.parse(localStorage.getItem("User"));
+  //////////////////
   return (
     <div className="w-full flex justify-center">
       <div className="w-full sm:w-4/6 lg:w-3/6 2xl:w-2/6">
@@ -9,41 +13,41 @@ function Profile() {
           <div className="card-body">
             <div className="avatar mb-10 flex justify-center transition duration-700">
               <div className="w-24 rounded-full ring ring-black hover:scale-125 hover:ring-red-900 ring-offset-base-100 ring-offset-2 transition duration-700">
-                <img src="https://placeimg.com/192/192/people" />
+                <img src={storageUser[0].image} />
               </div>
             </div>
             <div className="block">
               <div className="flex justify-start mb-5">
-                <label>Email : </label>
-                <label></label>
+                <label>User Name : </label>
+                <label className="ml-2">{storageUser[0].username}</label>
               </div>
               <div className="flex justify-start mb-5">
-                <label>User Name : </label>
-                <label></label>
+                <label>Email : </label>
+                <label className="ml-2">{storageUser[0].email}</label>
               </div>
               <div className="flex justify-start mb-5">
                 <label>Mobile : </label>
-                <label></label>
+                <label className="ml-2">{storageUser[0].email}</label>
               </div>
               <div className="flex justify-start mb-5">
                 <label>First Name : </label>
-                <label></label>
+                <label className="ml-2">{storageUser[0].email}</label>
               </div>
               <div className="flex justify-start mb-5">
                 <label>Last Name : </label>
-                <label></label>
+                <label className="ml-2">{storageUser[0].email}</label>
               </div>
               <div className="flex justify-start mb-5">
                 <label>Gender : </label>
-                <label></label>
+                <label className="ml-2">{storageUser[0].email}</label>
               </div>
               <div className="flex justify-start mb-5">
                 <label>Age : </label>
-                <label></label>
+                <label className="ml-2">{storageUser[0].email}</label>
               </div>
               <div className="flex justify-start mb-5">
                 <label>City : </label>
-                <label></label>
+                <label className="ml-2">{storageUser[0].email}</label>
               </div>
             </div>
           </div>

@@ -26,7 +26,7 @@ function ProductId({ login, setorderArray, orderArray }) {
       setorderArray([
         {
           idProduct: state,
-          count: 1,
+          qty: 1,
           name: datas.name,
           brand: datas.brand,
           category: datas.category,
@@ -50,7 +50,7 @@ function ProductId({ login, setorderArray, orderArray }) {
             if (item.idProduct == john.idProduct) {
               array = index;
 
-              help[array].count = help[array].count + 1;
+              help[array].qty = help[array].qty + 1;
               return [...help];
             }
           });
@@ -58,7 +58,7 @@ function ProductId({ login, setorderArray, orderArray }) {
         } else {
           help.push({
             idProduct: state,
-            count: 1,
+            qty: 1,
             name: datas.name,
             brand: datas.brand,
             category: datas.category,
@@ -86,7 +86,7 @@ function ProductId({ login, setorderArray, orderArray }) {
           if (item.idProduct == john.idProduct) {
             array = index;
 
-            help[array].count = help[array].count + 1;
+            help[array].qty = help[array].qty + 1;
             return [...help];
           }
         });
@@ -105,8 +105,8 @@ function ProductId({ login, setorderArray, orderArray }) {
           if (item.idProduct == john.idProduct) {
             array = index;
 
-            help[array].count = help[array].count - 1;
-            if (help[array].count == 0) {
+            help[array].qty = help[array].qty - 1;
+            if (help[array].qty == 0) {
               help.splice(index, 1);
               return [...help];
             }
@@ -198,9 +198,7 @@ function ProductId({ login, setorderArray, orderArray }) {
                 </span>
                 {datas.countInStock == 0
                   ? "There is no inventory"
-                  : 
-                  datas.countInStock
-                  }
+                  : datas.countInStock}
               </p>
             </div>
             <div className="mt-6 flex justify-start">
@@ -229,9 +227,7 @@ function ProductId({ login, setorderArray, orderArray }) {
             />
           </div>
           <button
-            className={`relative bottom-5 btn btn-primary hover:bg-transparent hover:border-4 hover:scale-105 hover:text-violet-300 transition-all duration-300 hover:shadow-xl w-60 ${
-              login && datas.countInStock !== 0 ? "" : "btn-disabled"
-            }`}
+            className="relative bottom-5 btn btn-primary hover:bg-transparent hover:border-4 hover:scale-105 hover:text-violet-300 transition-all duration-300 hover:shadow-xl w-60"
             onClick={() => (nu ? order() : nul())}
           >
             {q == -1 ? (
@@ -247,7 +243,7 @@ function ProductId({ login, setorderArray, orderArray }) {
                 <span className="text-2xl count">
                   {storage.map((item) => {
                     if (item.idProduct == state) {
-                      return item.count;
+                      return item.qty;
                     }
                   })}
                 </span>

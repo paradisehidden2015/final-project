@@ -12,7 +12,7 @@ function Orders({ login, orderArray, setorderArray }) {
   let countProduct = 0;
   if (Cart) {
     orderArray.map((item) => {
-      return (countProduct += item.count);
+      return (countProduct += item.qty);
     });
   }
   ////////////////
@@ -20,7 +20,7 @@ function Orders({ login, orderArray, setorderArray }) {
   let totalPrice = 0;
   if (Cart) {
     orderArray.map((item) => {
-      return (totalPrice += item.price * item.count);
+      return (totalPrice += item.price * item.qty);
     });
   }
   ////////////////
@@ -37,7 +37,7 @@ function Orders({ login, orderArray, setorderArray }) {
         if (item.idProduct == john.idProduct) {
           array1 = index;
 
-          help[array1].count = help[array1].count + 1;
+          help[array1].qty = help[array1].qty + 1;
           return [...help];
         }
       });
@@ -55,9 +55,9 @@ function Orders({ login, orderArray, setorderArray }) {
         if (item.idProduct == id) {
           array2 = index;
 
-          help[array2].count = help[array2].count - 1;
+          help[array2].qty = help[array2].qty - 1;
 
-          if (help[array2].count == 0) {
+          if (help[array2].qty == 0) {
             help.splice(array2, 1);
 
             return [...help];
@@ -71,8 +71,10 @@ function Orders({ login, orderArray, setorderArray }) {
   }
   //////////////////set localStorage
   localStorage.setItem("orderArray", JSON.stringify(orderArray));
-  //////////////////
-  // console.log(Cart);
+  ///////////////////
+  //////////////////get localStorage
+  let Storageaddress = JSON.parse(localStorage.getItem("Address"));
+  /////////////////
   return (
     <div>
       <div className="pt-20 pb-10">
@@ -111,7 +113,7 @@ function Orders({ login, orderArray, setorderArray }) {
                             <span className="text-lg lg:text-xl xl:text-xl font-semibold text-teal-900 mr-1">
                               Price All :
                             </span>
-                            {item.price * item.count} $
+                            {item.price * item.qty} $
                           </div>
                         </div>
                         <div className="mt-10 xl:mt-0 ml-16 sm:ml-5 md:ml-16 lg:ml-44 xl:ml-0 flex justify-start items-center">
@@ -121,7 +123,7 @@ function Orders({ login, orderArray, setorderArray }) {
                           >
                             -
                           </button>
-                          <p className="inline text-3xl w-20">{item.count}</p>
+                          <p className="inline text-3xl w-20">{item.qty}</p>
                           <button
                             className="btn btn-outline btn-circle btn-success text-xl btn-sm hover:shadow-md hover:shadow-green-900 hover:scale-125"
                             onClick={() => orderPlus(item.idProduct)}
@@ -154,7 +156,13 @@ function Orders({ login, orderArray, setorderArray }) {
                   </p>
                   <button
                     className="btn btn-info hover:scale-105 w-40"
-                    onClick={() => (login ? navigate("/") : navigate("/Login"))}
+                    onClick={() =>
+                      login
+                        ? Storageaddress
+                          ? navigate("/Checkout")
+                          : navigate("/Address")
+                        : navigate("/Login")
+                    }
                   >
                     next
                   </button>
