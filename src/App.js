@@ -53,7 +53,17 @@ function App() {
           path="/Address"
           element={<Address setaddress={setaddress} address={address} />}
         />
-        <Route path="/Checkout" element={<Checkout />} />
+        <Route
+          path="/Checkout"
+          element={
+            <Checkout
+              setorderArray={setorderArray}
+              orderArray={orderArray}
+              setaddress={setaddress}
+              address={address}
+            />
+          }
+        />
         <Route
           path="/Orders"
           element={

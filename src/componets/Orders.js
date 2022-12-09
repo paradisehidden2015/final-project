@@ -158,7 +158,7 @@ function Orders({ login, orderArray, setorderArray }) {
                     className="btn btn-info hover:scale-105 w-40"
                     onClick={() =>
                       login
-                        ? Storageaddress
+                        ? Storageaddress !== null
                           ? navigate("/Checkout")
                           : navigate("/Address")
                         : navigate("/Login")
