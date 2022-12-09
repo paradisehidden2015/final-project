@@ -1,8 +1,9 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import "../css/main.css";
 
-function Checkout({ orderArray, setorderArray, setaddress, address }) {
+function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
   const [situation, setSituation] = useState(false);
   const [textCity, setTextCity] = useState("");
   const [textAddress, setTextAddress] = useState("");
@@ -11,6 +12,43 @@ function Checkout({ orderArray, setorderArray, setaddress, address }) {
   let Storageaddress = JSON.parse(localStorage.getItem("Address"));
   const [Specifications, setSpecifications] = useState(Storageaddress);
   let qtyPlus = 0;
+  /////////////////////////////////
+  const PaymentMethod = document.querySelector("#PaymentMethod");
+  function submit() {
+    async function req() {
+      try {
+        const { data } = await axios.post(
+          "http://kzico.runflare.run/order/submit",
+          {
+            orderItems: [
+              orderArray.map((item) => {
+                return { product: item.idProduct, qty: item.qty };
+              }),
+            ],
+            shippingAddress: {
+              address: address.Address,
+              city: address.City,
+              postalCode: address.PostalCode,
+              phone: address.PhoneNumber,
+            },
+            paymentMethod: PaymentMethod.value,
+            shippingPrice: (qtyPlus / 100) * 20,
+            totalPrice: qtyPlus,
+          },
+          {
+            headers: {
+              authorization: `Bearer ${User.token}`,
+            },
+          }
+        );
+        console.log(data);
+      } catch (error) {
+        console.log(error.response.data);
+      }
+    }
+    return req();
+  }
+  ////////////////////////submit
 
   function Situation() {
     const btnedit = document.querySelector("#edit");
@@ -18,7 +56,7 @@ function Checkout({ orderArray, setorderArray, setaddress, address }) {
       setSituation(false);
       btnedit.innerHTML = "edit";
       //////////////////////
-      setaddress([Specifications]);
+      setaddress(Specifications);
       localStorage.setItem("Address", JSON.stringify(Specifications));
     } else {
       setSituation(true);
@@ -70,17 +108,18 @@ function Checkout({ orderArray, setorderArray, setaddress, address }) {
       // }
     });
   }
-  /////////////////////////////////////
+  /////////////////////////////////////load
   useEffect(() => {
     setTextCity(Storageaddress.City);
     setTextAddress(Storageaddress.Address);
     setTextPostalCode(Storageaddress.PostalCode);
     setTextPhoneNumber(Storageaddress.PhoneNumber);
   }, []);
-  ///////////////////////////////////////////
+  ///////////////////////////////////////////Done
   function Done() {
+    submit();
     Swal.fire({
-      position: "top-center",
+      position: "center",
       icon: "success",
       title: "Your purchase has been successfully registered",
       showConfirmButton: false,
@@ -245,14 +284,17 @@ function Checkout({ orderArray, setorderArray, setaddress, address }) {
                     ShopingPrice :
                   </label>
                   <div className="block leading-10 text-left lg:w-9/12 2xl:grid 2xl:w-6/12 h-10 bg-base-300 rounded-lg place-items-center justify-start pl-5 overflow-auto">
-                    {(qtyPlus / 100) * 20 + qtyPlus} $ (20%)
+                    {(qtyPlus / 100) * 20} $ (20%)
                   </div>
                 </div>
                 <div className="block lg:flex text-lg w-full">
                   <label className="block text-left mb-2 lg:w-3/12 2xl:w-5/12 leading-9">
                     PaymentMethod :
                   </label>
-                  <select className="select select-bordered block leading-10 text-left w-full lg:w-9/12 2xl:grid 2xl:w-6/12 h-10 bg-base-300 rounded-lg place-items-center justify-start pl-5 overflow-auto">
+                  <select
+                    id="PaymentMethod"
+                    className="select select-bordered block leading-10 text-left w-full lg:w-9/12 2xl:grid 2xl:w-6/12 h-10 bg-base-300 rounded-lg place-items-center justify-start pl-5 overflow-auto"
+                  >
                     <option>Pay at home</option>
                     <option>online payment</option>
                   </select>

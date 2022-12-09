@@ -61,6 +61,7 @@ function App() {
               orderArray={orderArray}
               setaddress={setaddress}
               address={address}
+              User={User}
             />
           }
         />

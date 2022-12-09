@@ -10,8 +10,9 @@ function Navbar({ login, orderArray }) {
   //////////////////
 
   function logout() {
-    window.location = window.location.href;
+    // window.location = window.location.href;
     JSON.parse(localStorage.removeItem("User"));
+    navigate("/");
   }
 
   /////////////////qty product
