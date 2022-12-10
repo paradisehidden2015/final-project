@@ -1,18 +1,43 @@
-import React, { useEffect } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../css/main.css";
 
-function Navbar({ login, orderArray }) {
+function Navbar({ login, orderArray, setUser, User }) {
   const navigate = useNavigate();
   //////////////////get localStorage
   let storage = JSON.parse(localStorage.getItem("orderArray"));
   let storageUser = JSON.parse(localStorage.getItem("User"));
-  //////////////////
+  //////////////////////////////////////////////////////////////////get profile db
+  const [Data, setData] = useState(null);
+  const req = async () => {
+    try {
+      const { data } = await axios.get(
+        "http://kzico.runflare.run/user/profile",
+        {
+          headers: {
+            authorization: `Bearer ${User[0].token}`,
+          },
+        }
+      );
+      // console.log(data);
 
+      setData(data);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+  req();
+  ///////////////////////////////////////////////////////////////
   function logout() {
-    // window.location = window.location.href;
-    JSON.parse(localStorage.removeItem("User"));
-    navigate("/");
+    // console.log("1");
+    setUser([]);
+    localStorage.removeItem("User");
+    setTimeout(() => {
+      navigate("/");
+      window.location = window.location.href;
+    }, 2000);
+    // console.log("2");
   }
 
   /////////////////qty product
@@ -104,7 +129,9 @@ function Navbar({ login, orderArray }) {
                 className="w-10 rounded-full"
                 onClick={() => navigate("/profile")}
               >
-                <img src={storageUser[0].image} />
+                <img
+                  src={Data !== null ? Data.user.image : storageUser[0].image}
+                />
               </div>
             </label>
           ) : (

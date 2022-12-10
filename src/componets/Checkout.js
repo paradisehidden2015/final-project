@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import "../css/main.css";
 
 function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
-  const [situation, setSituation] = useState(false);
+  const [Edit, setEdit] = useState(false);
   const [textCity, setTextCity] = useState("");
   const [textAddress, setTextAddress] = useState("");
   const [textPostalCode, setTextPostalCode] = useState("");
@@ -12,54 +12,69 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
   let Storageaddress = JSON.parse(localStorage.getItem("Address"));
   const [Specifications, setSpecifications] = useState(Storageaddress);
   let qtyPlus = 0;
+  const [Arry, setArry] = useState([{ product: "", qty: 0 }]);
+
+  const [orderItems, setorderItems] = useState(null);
+
   /////////////////////////////////
   const PaymentMethod = document.querySelector("#PaymentMethod");
-  function submit() {
-    async function req() {
-      try {
-        const { data } = await axios.post(
-          "http://kzico.runflare.run/order/submit",
-          {
-            orderItems: [
-              orderArray.map((item) => {
-                return { product: item.idProduct, qty: item.qty };
-              }),
-            ],
-            shippingAddress: {
-              address: address.Address,
-              city: address.City,
-              postalCode: address.PostalCode,
-              phone: address.PhoneNumber,
-            },
-            paymentMethod: PaymentMethod.value,
-            shippingPrice: (qtyPlus / 100) * 20,
-            totalPrice: qtyPlus,
+  const req = async () => {
+    // console.log(User[0].token);
+    // console.log(orderItems);
+
+    try {
+      const { data } = await axios.post(
+        "http://kzico.runflare.run/order/submit",
+        {
+          orderItems: orderItems,
+          shippingAddress: {
+            address: address.Address,
+            city: address.City,
+            postalCode: address.PostalCode,
+            phone: address.PhoneNumber,
           },
-          {
-            headers: {
-              authorization: `Bearer ${User.token}`,
-            },
-          }
-        );
-        console.log(data);
-      } catch (error) {
-        console.log(error.response.data);
-      }
+          paymentMethod: PaymentMethod.value,
+          shippingPrice: ((qtyPlus / 100) * 20).toFixed(3),
+          totalPrice: qtyPlus,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${User[0].token}`,
+          },
+        }
+      );
+      // console.log(data);
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Your purchase has been successfully registered",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+      setorderArray([]);
+    } catch (error) {
+      // console.log(error.response.data);
+      Swal.fire({
+        position: "center",
+        icon: "error",
+        title: error.response.data.message,
+        showConfirmButton: false,
+        timer: 3000,
+      });
     }
-    return req();
-  }
+  };
   ////////////////////////submit
 
   function Situation() {
     const btnedit = document.querySelector("#edit");
-    if (situation) {
-      setSituation(false);
+    if (Edit) {
+      setEdit(false);
       btnedit.innerHTML = "edit";
       //////////////////////
       setaddress(Specifications);
       localStorage.setItem("Address", JSON.stringify(Specifications));
     } else {
-      setSituation(true);
+      setEdit(true);
       btnedit.innerHTML = "confirmation";
     }
   }
@@ -114,17 +129,17 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
     setTextAddress(Storageaddress.Address);
     setTextPostalCode(Storageaddress.PostalCode);
     setTextPhoneNumber(Storageaddress.PhoneNumber);
+
+    setorderItems(
+      orderArray.map((item, index) => {
+        return { product: item.idProduct, qty: item.qty };
+      })
+    );
   }, []);
   ///////////////////////////////////////////Done
   function Done() {
-    submit();
-    Swal.fire({
-      position: "center",
-      icon: "success",
-      title: "Your purchase has been successfully registered",
-      showConfirmButton: false,
-      timer: 2000,
-    });
+    req();
+    localStorage.removeItem("orderArray");
   }
   return (
     <div className="pt-20 pb-24">
@@ -170,7 +185,7 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                       <div className="mt-10 xl:mt-0 ml-16 sm:ml-5 md:ml-16 lg:ml-44 xl:ml-0 flex justify-start items-center">
                         <button
                           className={`btn btn-outline btn-circle btn-error text-xl btn-sm hover:shadow-md hover:shadow-red-900 hover:scale-125 ${
-                            situation ? "" : "btn-disabled"
+                            Edit ? "" : "btn-disabled"
                           }`}
                           onClick={() => orderMuines(item.idProduct)}
                         >
@@ -179,7 +194,7 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                         <p className="inline text-3xl w-20">{item.qty}</p>
                         <button
                           className={`btn btn-outline btn-circle btn-success text-xl btn-sm hover:shadow-md hover:shadow-green-900 hover:scale-125 ${
-                            situation ? "" : "btn-disabled"
+                            Edit ? "" : "btn-disabled"
                           }`}
                           onClick={() => orderPlus(item.idProduct)}
                         >
@@ -205,7 +220,7 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                   className="input input-primary grid w-full lg:w-9/12 h-10 bg-base-300 justify-start pl-5 overflow-auto"
                   value={textCity}
                   onChange={(e) => {
-                    situation && setTextCity(e.target.value);
+                    Edit && setTextCity(e.target.value);
                     setSpecifications((last) => {
                       const help = JSON.parse(JSON.stringify(last));
                       help.City = e.target.value;
@@ -221,7 +236,7 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                   className="input input-primary grid w-full lg:w-9/12 h-10 bg-base-300 justify-start pl-5 overflow-auto"
                   value={textAddress}
                   onChange={(e) => {
-                    situation && setTextAddress(e.target.value);
+                    Edit && setTextAddress(e.target.value);
                     setSpecifications((last) => {
                       const help = JSON.parse(JSON.stringify(last));
                       help.Address = e.target.value;
@@ -237,7 +252,7 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                   className="input input-primary grid w-full lg:w-9/12 h-10 bg-base-300 justify-start pl-5 overflow-auto"
                   value={textPostalCode}
                   onChange={(e) => {
-                    situation && setTextPostalCode(e.target.value);
+                    Edit && setTextPostalCode(e.target.value);
                     setSpecifications((last) => {
                       const help = JSON.parse(JSON.stringify(last));
                       help.PostalCode = e.target.value;
@@ -253,7 +268,7 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                   className="input input-primary grid w-full lg:w-9/12 h-10 bg-base-300 justify-start pl-5 overflow-auto"
                   value={textPhoneNumber}
                   onChange={(e) => {
-                    situation && setTextPhoneNumber(e.target.value);
+                    Edit && setTextPhoneNumber(e.target.value);
                     setSpecifications((last) => {
                       const help = JSON.parse(JSON.stringify(last));
                       help.PhoneNumber = e.target.value;
@@ -284,7 +299,7 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                     ShopingPrice :
                   </label>
                   <div className="block leading-10 text-left lg:w-9/12 2xl:grid 2xl:w-6/12 h-10 bg-base-300 rounded-lg place-items-center justify-start pl-5 overflow-auto">
-                    {(qtyPlus / 100) * 20} $ (20%)
+                    {((qtyPlus / 100) * 20).toFixed(3)} $ (20%)
                   </div>
                 </div>
                 <div className="block lg:flex text-lg w-full">
@@ -312,7 +327,9 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                 <div className="flex justify-evenly">
                   <button
                     id="edit"
-                    className="btn btn-accent bg-indigo-800 hover:bg-indigo-600 border-2 sm:w-5/12 lg:w-3/12"
+                    className={`btn btn-accent bg-indigo-800 hover:bg-indigo-600 border-2 sm:w-5/12 lg:w-3/12 ${
+                      !orderArray.length ? "btn-disabled" : ""
+                    }`}
                     onClick={() => Situation()}
                   >
                     edit
@@ -320,7 +337,7 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                   <button
                     id="done"
                     className={`btn btn-accent bg-indigo-800 hover:bg-indigo-600 border-2 sm:w-5/12 lg:w-3/12 ${
-                      situation ? "btn-disabled" : ""
+                      Edit || !orderArray.length ? "btn-disabled" : ""
                     }`}
                     onClick={() => Done()}
                   >

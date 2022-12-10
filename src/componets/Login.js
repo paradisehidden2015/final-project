@@ -53,12 +53,9 @@ function Login({ setlogin, setUser, User }) {
           progress: undefined,
           theme: "dark",
         });
-        setTimeout(() => {
-          navigate("/");
-          setlogin(true);
-          setUser([data.user]);
-          // console.log(data);
-        }, 2000);
+        navigate("/");
+        setlogin(true);
+        setUser([data.user]);
       } catch (error) {
         // console.log(error.response.data);
         if (error.response.data.success === false) {

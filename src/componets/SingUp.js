@@ -61,7 +61,7 @@ function SingUp() {
             mobile: Mobile.value,
           }
         );
-        console.log(data.message);
+        // console.log(data.message);
         toast.success(data.message, {
           position: "top-center",
           autoClose: 1000,
@@ -76,7 +76,7 @@ function SingUp() {
           navigate("/Login");
         }, 2000);
       } catch (error) {
-        console.log(error.response.data.message);
+        // console.log(error.response.data.message);
         toast.error(error.response.data.message, {
           position: "top-center",
           autoClose: 5000,
