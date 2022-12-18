@@ -1,149 +1,54 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import Swal from "sweetalert2";
+import { useDispatch, useSelector } from "react-redux";
 import "../css/main.css";
+import { getCart, getCheckout } from "../redux/action";
 
-function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
+function Checkout({ orderArray, User, setQTY }) {
+  const dispatch = useDispatch();
+  const { Cart } = useSelector((state) => state);
+
   const [Edit, setEdit] = useState(false);
-  const [textCity, setTextCity] = useState("");
-  const [textAddress, setTextAddress] = useState("");
-  const [textPostalCode, setTextPostalCode] = useState("");
-  const [textPhoneNumber, setTextPhoneNumber] = useState("");
   let Storageaddress = JSON.parse(localStorage.getItem("Address"));
+  let StorageOrder = JSON.parse(localStorage.getItem("orderArray"));
   const [Specifications, setSpecifications] = useState(Storageaddress);
+  const [orderItems, setorderItems] = useState([]);
+  const [FinalOrder, setFinalOrder] = useState(null);
   let qtyPlus = 0;
-  const [Arry, setArry] = useState([{ product: "", qty: 0 }]);
-
-  const [orderItems, setorderItems] = useState(null);
-
-  /////////////////////////////////
+  ///////////////////////////////////////////// button select option
   const PaymentMethod = document.querySelector("#PaymentMethod");
-  const req = async () => {
-    // console.log(User[0].token);
-    // console.log(orderItems);
-
-    try {
-      const { data } = await axios.post(
-        "http://kzico.runflare.run/order/submit",
-        {
-          orderItems: orderItems,
-          shippingAddress: {
-            address: address.Address,
-            city: address.City,
-            postalCode: address.PostalCode,
-            phone: address.PhoneNumber,
-          },
-          paymentMethod: PaymentMethod.value,
-          shippingPrice: ((qtyPlus / 100) * 20).toFixed(3),
-          totalPrice: qtyPlus,
-        },
-        {
-          headers: {
-            authorization: `Bearer ${User[0].token}`,
-          },
-        }
-      );
-      // console.log(data);
-      Swal.fire({
-        position: "center",
-        icon: "success",
-        title: "Your purchase has been successfully registered",
-        showConfirmButton: false,
-        timer: 3000,
-      });
-      setorderArray([]);
-    } catch (error) {
-      // console.log(error.response.data);
-      Swal.fire({
-        position: "center",
-        icon: "error",
-        title: error.response.data.message,
-        showConfirmButton: false,
-        timer: 3000,
-      });
-    }
-  };
-  ////////////////////////submit
-
+  ////////////////////////////////////////////  load
+  useEffect(() => {
+    setorderItems(
+      Cart.map((item) => {
+        return { product: item._id, qty: item.qty };
+      })
+    );
+  }, []);
+  //////////////////////////////////////////   submit
   function Situation() {
     const btnedit = document.querySelector("#edit");
     if (Edit) {
       setEdit(false);
       btnedit.innerHTML = "edit";
-      //////////////////////
-      setaddress(Specifications);
       localStorage.setItem("Address", JSON.stringify(Specifications));
     } else {
       setEdit(true);
       btnedit.innerHTML = "confirmation";
     }
   }
-  ///////////////////Plus&Muines product
-
-  function orderPlus(id) {
-    let array1 = 0;
-    const john = orderArray.find((item) => item.idProduct === id);
-    setorderArray((last) => {
-      const help = JSON.parse(JSON.stringify(last));
-
-      // if (john) {
-      help.map((item, index) => {
-        if (item.idProduct == john.idProduct) {
-          array1 = index;
-
-          help[array1].qty = help[array1].qty + 1;
-          return [...help];
-        }
-      });
-      return [...help];
-      // }
-    });
-  }
-  function orderMuines(id) {
-    let array2 = 0;
-    setorderArray((last) => {
-      const help = JSON.parse(JSON.stringify(last));
-
-      // if (john) {
-      help.map((item, index) => {
-        if (item.idProduct == id) {
-          array2 = index;
-
-          help[array2].qty = help[array2].qty - 1;
-
-          if (help[array2].qty == 0) {
-            help.splice(array2, 1);
-
-            return [...help];
-          }
-          return [...help];
-        }
-      });
-      return [...help];
-      // }
-    });
-  }
-  /////////////////////////////////////load
-  useEffect(() => {
-    setTextCity(Storageaddress.City);
-    setTextAddress(Storageaddress.Address);
-    setTextPostalCode(Storageaddress.PostalCode);
-    setTextPhoneNumber(Storageaddress.PhoneNumber);
-
-    setorderItems(
-      orderArray.map((item, index) => {
-        return { product: item.idProduct, qty: item.qty };
-      })
-    );
-  }, []);
-  ///////////////////////////////////////////Done
+  ///////////////////////////////////////////  Done
   function Done() {
-    req();
+    dispatch(getCheckout(orderItems, FinalOrder));
     localStorage.removeItem("orderArray");
+    window.location = window.location.href;
+    //   setQTY(Math.random());
+    // setEdit(true);
   }
+  //////////////////////////////////////////
   return (
     <div className="pt-20 pb-24">
-      {orderArray.map((item, index) => {
+      {Cart.map((item, index) => {
         qtyPlus += item.price * item.qty;
         return (
           <div className="item mb-5" key={index}>
@@ -153,12 +58,7 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                   <div className="sm:flex sm:justify-star w-full">
                     <div className="h-56 sm:w-56 sm:h-44 xl:w-32 xl:h-32 flex justify-center items-center overflow-hidden rounded-lg shadow-xl bg-white">
                       <div className="w-5/12">
-                        <img
-                          className=""
-                          src={item.image}
-                          // src="https://placeimg.com/400/225/arch"
-                          alt="image"
-                        />
+                        <img className="" src={item.image} alt="image" />
                       </div>
                     </div>
                     <div className="w-full mt-5 sm:mt-0 block xl:flex md:justify-between sm:ml-10">
@@ -187,16 +87,34 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                           className={`btn btn-outline btn-circle btn-error text-xl btn-sm hover:shadow-md hover:shadow-red-900 hover:scale-125 ${
                             Edit ? "" : "btn-disabled"
                           }`}
-                          onClick={() => orderMuines(item.idProduct)}
+                          onClick={() => {
+                            dispatch(getCart("MinusNumber", item._id));
+                            const qq = Cart.find((i) => i._id === item._id);
+                            if (qq === undefined) {
+                              setQTY(Math.random());
+                            }
+                          }}
                         >
                           -
                         </button>
-                        <p className="inline text-3xl w-20">{item.qty}</p>
+                        <p className="inline text-3xl w-20">
+                          {Cart.map((i) => {
+                            if (i._id === item._id) {
+                              return i.qty;
+                            }
+                          })}
+                        </p>
                         <button
                           className={`btn btn-outline btn-circle btn-success text-xl btn-sm hover:shadow-md hover:shadow-green-900 hover:scale-125 ${
                             Edit ? "" : "btn-disabled"
                           }`}
-                          onClick={() => orderPlus(item.idProduct)}
+                          onClick={() => {
+                            dispatch(getCart("PlusNumber", item._id));
+                            const qq = Cart.find((i) => i._id === item._id);
+                            if (qq === undefined) {
+                              setQTY(Math.random());
+                            }
+                          }}
                         >
                           +
                         </button>
@@ -217,10 +135,11 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                 <label className="lg:w-3/12 mb-2 flex">City :</label>
                 <input
                   type="text"
-                  className="input input-primary grid w-full lg:w-9/12 h-10 bg-base-300 justify-start pl-5 overflow-auto"
-                  value={textCity}
+                  className={`input input-primary grid w-full lg:w-9/12 h-10 bg-base-300 justify-start pl-5 overflow-auto ${
+                    Edit ? "" : "btn-disabled text-slate-400"
+                  }`}
+                  value={Specifications.City}
                   onChange={(e) => {
-                    Edit && setTextCity(e.target.value);
                     setSpecifications((last) => {
                       const help = JSON.parse(JSON.stringify(last));
                       help.City = e.target.value;
@@ -233,10 +152,11 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                 <label className="lg:w-3/12 mb-2 flex">Address :</label>
                 <input
                   type="text"
-                  className="input input-primary grid w-full lg:w-9/12 h-10 bg-base-300 justify-start pl-5 overflow-auto"
-                  value={textAddress}
+                  className={`input input-primary grid w-full lg:w-9/12 h-10 bg-base-300 justify-start pl-5 overflow-auto ${
+                    Edit ? "" : "btn-disabled text-slate-400"
+                  }`}
+                  value={Specifications.Address}
                   onChange={(e) => {
-                    Edit && setTextAddress(e.target.value);
                     setSpecifications((last) => {
                       const help = JSON.parse(JSON.stringify(last));
                       help.Address = e.target.value;
@@ -249,10 +169,11 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                 <label className="lg:w-3/12 mb-2 flex">Postal Code :</label>
                 <input
                   type="text"
-                  className="input input-primary grid w-full lg:w-9/12 h-10 bg-base-300 justify-start pl-5 overflow-auto"
-                  value={textPostalCode}
+                  className={`input input-primary grid w-full lg:w-9/12 h-10 bg-base-300 justify-start pl-5 overflow-auto ${
+                    Edit ? "" : "btn-disabled text-slate-400"
+                  }`}
+                  value={Specifications.PostalCode}
                   onChange={(e) => {
-                    Edit && setTextPostalCode(e.target.value);
                     setSpecifications((last) => {
                       const help = JSON.parse(JSON.stringify(last));
                       help.PostalCode = e.target.value;
@@ -265,10 +186,11 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                 <label className="lg:w-3/12 mb-2 flex">Phone Number :</label>
                 <input
                   type="text"
-                  className="input input-primary grid w-full lg:w-9/12 h-10 bg-base-300 justify-start pl-5 overflow-auto"
-                  value={textPhoneNumber}
+                  className={`input input-primary grid w-full lg:w-9/12 h-10 bg-base-300 justify-start pl-5 overflow-auto ${
+                    Edit ? "" : "btn-disabled text-slate-400"
+                  }`}
+                  value={Specifications.PhoneNumber}
                   onChange={(e) => {
-                    Edit && setTextPhoneNumber(e.target.value);
                     setSpecifications((last) => {
                       const help = JSON.parse(JSON.stringify(last));
                       help.PhoneNumber = e.target.value;
@@ -291,7 +213,7 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                     TotalPrice :
                   </label>
                   <div className="block leading-10 text-left lg:w-9/12 2xl:grid 2xl:w-6/12 h-10 bg-base-300 rounded-lg place-items-center justify-start pl-5 overflow-auto">
-                    {qtyPlus} $
+                    {qtyPlus.toFixed(3)} $
                   </div>
                 </div>
                 <div className="block lg:flex text-lg w-full">
@@ -312,6 +234,7 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                   >
                     <option>Pay at home</option>
                     <option>online payment</option>
+                    <option>Payment with digital currency</option>
                   </select>
                 </div>
               </div>
@@ -319,6 +242,17 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
           </div>
         </div>
       </div>
+      {!FinalOrder &&
+        PaymentMethod &&
+        setFinalOrder({
+          address: Specifications.Address,
+          city: Specifications.City,
+          postalCode: Specifications.PostalCode,
+          phone: Specifications.PhoneNumber,
+          paymentMethod: PaymentMethod.value,
+          shippingPrice: ((qtyPlus / 100) * 20).toFixed(3),
+          totalPrice: qtyPlus,
+        })}
       <div className="item">
         <div className="flex justify-center">
           <div className="item w-11/12">
@@ -328,7 +262,7 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                   <button
                     id="edit"
                     className={`btn btn-accent bg-indigo-800 hover:bg-indigo-600 border-2 sm:w-5/12 lg:w-3/12 ${
-                      !orderArray.length ? "btn-disabled" : ""
+                      !Cart ? "btn-disabled" : ""
                     }`}
                     onClick={() => Situation()}
                   >
@@ -337,7 +271,7 @@ function Checkout({ orderArray, setorderArray, setaddress, address, User }) {
                   <button
                     id="done"
                     className={`btn btn-accent bg-indigo-800 hover:bg-indigo-600 border-2 sm:w-5/12 lg:w-3/12 ${
-                      Edit || !orderArray.length ? "btn-disabled" : ""
+                      Edit || !Cart?.length ? "btn-disabled" : ""
                     }`}
                     onClick={() => Done()}
                   >

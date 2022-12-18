@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "../css/main.css";
 
-function Address({ setaddress, address }) {
+function Address() {
   const navigate = useNavigate();
-  const [Information, setInformation] = useState([]);
+  let Storageaddress = JSON.parse(localStorage.getItem("Address"));
+  const [address, setaddress] = useState(Storageaddress ? Storageaddress : []);
 
   function information() {
     const inputCity = document.querySelector("#City");

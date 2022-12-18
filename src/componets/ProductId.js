@@ -1,145 +1,35 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import "../css/main.css";
+import { getCart, getIdPrduct } from "../redux/action";
 
-function ProductId({ login, setorderArray, orderArray }) {
+function ProductId({ setQTY }) {
   const { state } = useLocation();
-  const [nu, setnu] = useState(true);
+  const [status, setstatus] = useState(false);
 
-  let q = -1;
-  const help2 = JSON.parse(JSON.stringify(orderArray));
-  const john = orderArray.find((item) => item.idProduct === state);
-  if (john) {
-    help2.map((item, index) => {
-      if (item.idProduct == john.idProduct) {
-        q = index;
-      }
-    });
-  }
-
-  function nul() {}
-  let array = 0;
-  function order() {
-    setnu(false);
-    if (orderArray.length == 0) {
-      setorderArray([
-        {
-          idProduct: state,
-          qty: 1,
-          name: datas.name,
-          brand: datas.brand,
-          category: datas.category,
-          color: datas.color,
-          price: datas.price,
-          rating: datas.rating,
-          countInStock: datas.countInStock,
-          numReviews: datas.numReviews,
-          description: datas.description,
-          image: datas.image,
-        },
-      ]);
-    } else {
-      const john = orderArray.find((item) => item.idProduct === state);
-
-      setorderArray((last) => {
-        const help = JSON.parse(JSON.stringify(last));
-
-        if (john) {
-          help.map((item, index) => {
-            if (item.idProduct == john.idProduct) {
-              array = index;
-
-              help[array].qty = help[array].qty + 1;
-              return [...help];
-            }
-          });
-          return [...help];
-        } else {
-          help.push({
-            idProduct: state,
-            qty: 1,
-            name: datas.name,
-            brand: datas.brand,
-            category: datas.category,
-            color: datas.color,
-            price: datas.price,
-            rating: datas.rating,
-            countInStock: datas.countInStock,
-            numReviews: datas.numReviews,
-            description: datas.description,
-            image: datas.image,
-          });
-          return [...help];
-        }
-      });
-    }
-  }
-  function orderPlus() {
-    const john = orderArray.find((item) => item.idProduct === state);
-
-    setorderArray((last) => {
-      const help = JSON.parse(JSON.stringify(last));
-
-      if (john) {
-        help.map((item, index) => {
-          if (item.idProduct == john.idProduct) {
-            array = index;
-
-            help[array].qty = help[array].qty + 1;
-            return [...help];
-          }
-        });
-        return [...help];
-      }
-    });
-  }
-  function orderMuines() {
-    const john = orderArray.find((item) => item.idProduct === state);
-
-    setorderArray((last) => {
-      const help = JSON.parse(JSON.stringify(last));
-
-      if (john) {
-        help.map((item, index) => {
-          if (item.idProduct == john.idProduct) {
-            array = index;
-
-            help[array].qty = help[array].qty - 1;
-            if (help[array].qty == 0) {
-              help.splice(index, 1);
-              return [...help];
-            }
-            return [...help];
-          }
-        });
-        return [...help];
-      }
-    });
-  }
-  //////////////////sat localStorage
-  localStorage.setItem("orderArray", JSON.stringify(orderArray));
-  //////////////////
-  //////////////////get localStorage
-  let storage = JSON.parse(localStorage.getItem("orderArray"));
-  //////////////////
-
-  const [datas, setdatas] = useState({});
-  const colo = datas.color;
-  const product = async () => {
-    try {
-      const { data } = await axios.get(
-        `http://kzico.runflare.run/product/${state}`
-      );
-      setdatas(data);
-    } catch (error) {
-      console.log(error.response.data);
-    }
-  };
+  const dispatch = useDispatch();
+  const { Cart, IdPrduct } = useSelector((state) => state);
+  const get = IdPrduct.data ?? false;
   useEffect(() => {
-    product();
+    dispatch(getIdPrduct(state));
+    Cart.map((item) => {
+      if (item._id === state) {
+        setstatus(true);
+      }
+    });
   }, []);
-
+  /////////////////////////////////////////////////// disabled btn
+  const qq = Cart.find((item) => item._id === state);
+  if (status) {
+    if (qq === undefined) {
+      setstatus(false);
+      setTimeout(() => {
+        setQTY(Math.random());
+      }, 200);
+    }
+  }
   return (
     <div className="flex justify-center">
       <div className="mt-20 flex justify-center w-full sm:w-4/5">
@@ -148,108 +38,123 @@ function ProductId({ login, setorderArray, orderArray }) {
             <div className="mt-6 flex justify-start">
               <p>
                 <span className="font-semibold text-teal-500 overflow-auto">
-                  Name :{" "}
+                  Name :
                 </span>
-                {datas.name}
+                {get.name}
               </p>
             </div>
             <div className="mt-6 flex justify-start">
               <p>
                 <span className="font-semibold text-teal-500">Brand : </span>
-                {datas.brand}
+                {get.brand}
               </p>
             </div>
             <div className="mt-6 flex justify-start">
               <p>
                 <span className="font-semibold text-teal-500">Category : </span>
-                {datas.category}
+                {get.category}
               </p>
             </div>
             <div className="mt-6 flex justify-start">
               <p>
                 <span className="font-semibold text-teal-500 relative">
-                  Color :{" "}
+                  Color :
                 </span>
-                {datas.color}
+                {get.color}
                 {
-                  <div
+                  <span
                     className="w-5 inline-block ml-2 h-5 rounded-full relative top-2"
-                    style={{ backgroundColor: colo }}
-                  ></div>
+                    style={{ backgroundColor: get.color }}
+                  ></span>
                 }
               </p>
             </div>
             <div className="mt-6 flex justify-start">
               <p>
                 <span className="font-semibold text-teal-500">Price : </span>
-                {datas.price} $
+                {get.price} $
               </p>
             </div>
             <div className="mt-6 flex justify-start">
               <p>
                 <span className="font-semibold text-teal-500">Rating : </span>
-                {datas.rating}
+                {get.rating}
               </p>
             </div>
             <div className="mt-6 flex justify-start">
               <p>
                 <span className="font-semibold text-teal-500">
-                  CountIn Stock :{" "}
+                  CountIn Stock :
                 </span>
-                {datas.countInStock == 0
+                {get.countInStock == 0
                   ? "There is no inventory"
-                  : datas.countInStock}
+                  : get.countInStock}
               </p>
             </div>
             <div className="mt-6 flex justify-start">
               <p>
                 <span className="font-semibold text-teal-500">
-                  Num Reviews :{" "}
+                  Num Reviews :
                 </span>
-                {datas.numReviews}
+                {get.numReviews}
               </p>
             </div>
             <div className="mt-6 flex justify-start overflow-auto">
               <p>
                 <span className="font-semibold text-teal-500">
-                  Description :{" "}
+                  Description :
                 </span>
-                {datas.description}
+                {get.description}
               </p>
             </div>
           </div>
           <div className="rounded-xl shadow-xl absolute top-5 right-5 w-10/12 sm:w-4/12 2xl:w-3/12 h-40 lg:h-60 2xl:h-64 bg-white flex justify-center items-center overflow-hidden">
-            <img
-              className="w-4/12"
-              src={datas.image}
-              // "https://placeimg.com/400/225/arch"
-              alt="image"
-            />
+            <img className="w-4/12" src={get.image} alt="image" />
           </div>
           <button
-            className="relative bottom-5 btn btn-primary hover:bg-transparent hover:border-4 hover:scale-105 hover:text-violet-300 transition-all duration-300 hover:shadow-xl w-60"
-            onClick={() => (nu ? order() : nul())}
+            className={`relative bottom-5 btn btn-primary hover:bg-transparent hover:border-4 hover:scale-105 hover:text-violet-300 transition-all duration-300 hover:shadow-xl w-60 ${
+              status && "hover:scale-100"
+            }`}
+            onClick={() => {
+              !status && dispatch(getCart("AddProduct", state, get));
+              setstatus(true);
+            }}
           >
-            {q == -1 ? (
+            {!status ? (
               "add to cart"
             ) : (
               <span className="w-full flex justify-between">
                 <span
                   className="btn btn-circle btn-error btn-sm hover:scale-125 text-lg"
-                  onClick={() => orderMuines()}
+                  onClick={() => {
+                    dispatch(getCart("MinusNumber", state));
+                    Cart.map((item) => {
+                      if (item._id === state) {
+                        setQTY(item.qty);
+                      }
+                    });
+                  }}
                 >
                   -
                 </span>
                 <span className="text-2xl count">
-                  {storage.map((item) => {
-                    if (item.idProduct == state) {
+                  {Cart.map((item) => {
+                    if (item._id === state) {
                       return item.qty;
                     }
                   })}
                 </span>
                 <span
                   className="btn btn-circle btn-success btn-sm hover:scale-125 text-lg"
-                  onClick={() => orderPlus()}
+                  onClick={() => {
+                    dispatch(getCart("PlusNumber", state));
+
+                    Cart.map((item) => {
+                      if (item._id === state) {
+                        setQTY(item.qty);
+                      }
+                    });
+                  }}
                 >
                   +
                 </span>

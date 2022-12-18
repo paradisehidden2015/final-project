@@ -1,26 +1,19 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import "../../css/main.css";
+import { getUploadAvatar } from "../../redux/action";
 
 function UploadAvatar({ setUser, User }) {
   const [Pic, setPic] = useState(null);
+  const dispatch = useDispatch();
+  const { data, error } = useSelector((state) => state.UploadAvatar);
 
-  const req = async () => {
+  const req = () => {
     if (Pic) {
-      const formData = new FormData();
-      formData.append("profile-image", Pic);
       try {
-        const { data } = await axios.post(
-          "http://kzico.runflare.run/user/profile-image",
-          formData,
-          {
-            headers: {
-              authorization: `Bearer ${User[0].token}`,
-            },
-          }
-        );
-        console.log(data);
+        dispatch(getUploadAvatar(Pic));
         Swal.fire({
           position: "center",
           icon: "success",
@@ -29,7 +22,6 @@ function UploadAvatar({ setUser, User }) {
           timer: 3000,
         });
       } catch (error) {
-        console.log(error.response.data);
         Swal.fire({
           position: "center",
           icon: "error",

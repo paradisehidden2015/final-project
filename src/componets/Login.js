@@ -57,7 +57,7 @@ function Login({ setlogin, setUser, User }) {
         setlogin(true);
         setUser([data.user]);
       } catch (error) {
-        // console.log(error.response.data);
+        console.log(error.response.data);
         if (error.response.data.success === false) {
           toast.error("Incorrect username/email or password", {
             position: "top-center",

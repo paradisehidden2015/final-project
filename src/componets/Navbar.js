@@ -1,53 +1,42 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../css/main.css";
+import { getProfile } from "../redux/action";
 
-function Navbar({ login, orderArray, setUser, User }) {
+function Navbar({ login, orderArray, setUser, User, setlogin }) {
   const navigate = useNavigate();
-  //////////////////get localStorage
-  let storage = JSON.parse(localStorage.getItem("orderArray"));
-  let storageUser = JSON.parse(localStorage.getItem("User"));
-  //////////////////////////////////////////////////////////////////get profile db
-  const [Data, setData] = useState(null);
-  const req = async () => {
-    try {
-      const { data } = await axios.get(
-        "http://kzico.runflare.run/user/profile",
-        {
-          headers: {
-            authorization: `Bearer ${User[0].token}`,
-          },
-        }
-      );
-      // console.log(data);
+  const { data, error } = useSelector((state) => state.Profile);
+  const dispatch = useDispatch();
+  const get = data.user ?? false;
+  ///////////////////////////////////////////////////////////////   Load
+  useEffect(() => {
+    dispatch(getProfile());
+  }, []);
+  if (error) {
+    setlogin(false);
+  }
+  //////////////////////////////////////////////////////////////   get localStorage
+  const storageorder = JSON.parse(localStorage.getItem("orderArray"));
+  const storageUser = JSON.parse(localStorage.getItem("User"));
+  const get1 = storageUser[0] ?? false;
 
-      setData(data);
-    } catch (error) {
-      console.log(error.response.data);
-    }
-  };
-  req();
-  ///////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////   logout
   function logout() {
-    // console.log("1");
+    navigate("/");
+    setlogin(false);
     setUser([]);
     localStorage.removeItem("User");
-    setTimeout(() => {
-      navigate("/");
-      window.location = window.location.href;
-    }, 2000);
-    // console.log("2");
   }
-
-  /////////////////qty product
+  //////////////////////////////////////////////////////////////  qty product
   let countProduct = 0;
-  if (storage) {
-    orderArray.map((item) => {
+  if (storageorder) {
+    storageorder.map((item) => {
       return (countProduct += item.qty);
     });
   }
-  ////////////////
+  ///////////////////////////////////////////////////////////////
   return (
     <div>
       <div className="navbar bg-primary flex justify-between fixed top-0 z-50 shadow-md shadow-violet-700">
@@ -62,7 +51,7 @@ function Navbar({ login, orderArray, setUser, User }) {
         <div className="">
           <div
             className="dropdown dropdown-end"
-            onClick={() => navigate("/Orders")}
+            onClick={() => navigate("/Cart")}
           >
             <label
               // tabIndex={orderArray.length ? 0 : ""}
@@ -83,7 +72,7 @@ function Navbar({ login, orderArray, setUser, User }) {
                     d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
                   />
                 </svg>
-                {orderArray.length ? (
+                {storageorder?.length > 0 ? (
                   <span className="badge badge-sm indicator-item">
                     {countProduct}
                   </span>
@@ -97,10 +86,10 @@ function Navbar({ login, orderArray, setUser, User }) {
             <label
               tabIndex={login ? 0 : ""}
               onClick={() => !login && navigate("/Login")}
-              className="btn btn-ghost mx-10"
+              className="btn btn-ghost sm:mx-10"
             >
               <div className="text-lg">
-                {login ? storageUser[0].username : "Login / Singup"}
+                {login ? get1.username : "Login / Singup"}
               </div>
             </label>
             <ul
@@ -129,9 +118,7 @@ function Navbar({ login, orderArray, setUser, User }) {
                 className="w-10 rounded-full"
                 onClick={() => navigate("/profile")}
               >
-                <img
-                  src={Data !== null ? Data.user.image : storageUser[0].image}
-                />
+                <img src={get1.image} />
               </div>
             </label>
           ) : (

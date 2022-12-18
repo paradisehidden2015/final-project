@@ -1,32 +1,54 @@
 import axios from "axios";
-import { postcss } from "daisyui/src/lib/postcss-prefixer";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import "../css/main.css";
+import { getProduct } from "../redux/action";
 
 function Product({ User }) {
   const navigate = useNavigate();
-  const [data, setdata] = useState({});
+  const dispatch = useDispatch();
+  const { Product } = useSelector((state) => state);
   const [comments, setcomments] = useState({});
-  const product = async () => {
-    try {
-      const { data } = await axios.get("http://kzico.runflare.run/product/");
-      setdata(data);
+  const get = Product.data ?? false;
+  useEffect(() => {
+    dispatch(getProduct());
+  }, []);
+  useEffect(() => {
+    if (get && get !== [] && get?.length) {
       const help = {};
-      data.map((item) => {
+      get.map((item) => {
         help[item._id] = [];
       });
-      data.map((item) => {
+      get.map((item) => {
         help[item._id] = [...help[item._id], item];
       });
       setcomments(help);
-    } catch (error) {
-      console.log(error.response.data);
     }
-  };
-  useEffect(() => {
-    product();
-  }, []);
+  }, [Product]);
+
+  // const product = async () => {
+  //   try {
+  //     const { data } = await axios.get("http://kzico.runflare.run/product/");
+  //     setdata(data);
+
+  //     const help = {};
+  //     data.map((item) => {
+  //       help[item._id] = [];
+  //     });
+  //     data.map((item) => {
+  //       help[item._id] = [...help[item._id], item];
+  //     });
+
+  //     setcomments(help);
+  //   } catch (error) {
+  //     console.log(error.response.data);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   product();
+  // }, []);
 
   //////////////////sat localStorage
   localStorage.setItem("User", JSON.stringify(User));
@@ -52,7 +74,6 @@ function Product({ User }) {
                 >
                   <figure className="bg-white h-60">
                     <img src={item.image} className="w-32" alt="image" />
-                    {/* <img src="https://placeimg.com/400/225/arch" alt="image" /> */}
                   </figure>
                   <div className="card-body">
                     <h2 className="text-2xl font-semibold mb-20">
