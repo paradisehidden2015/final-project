@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "../css/main.css";
 
-function Login({ setlogin, setUser, User }) {
+function Login({ setlogin, setQTY }) {
   const navigate = useNavigate();
   const [UserName, setUserName] = useState({ value: "" });
   const [Password, setPassword] = useState({ value: "" });
@@ -53,12 +53,14 @@ function Login({ setlogin, setUser, User }) {
           progress: undefined,
           theme: "dark",
         });
-        navigate("/");
+        /////////////////////////////////////////////////////////
         setlogin(true);
-        setUser([data.user]);
+        navigate("/");
+        localStorage.setItem("User", JSON.stringify(data.user));
+        //////////////////////////////////////////////////////////
       } catch (error) {
-        console.log(error.response.data);
-        if (error.response.data.success === false) {
+        console.log(error);
+        if (error) {
           toast.error("Incorrect username/email or password", {
             position: "top-center",
             autoClose: 5000,

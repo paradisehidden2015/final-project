@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
@@ -11,7 +10,7 @@ function ProductId({ setQTY }) {
 
   const dispatch = useDispatch();
   const { Cart, IdPrduct } = useSelector((state) => state);
-  const get = IdPrduct.data ?? false;
+  const get = IdPrduct ?? false;
   useEffect(() => {
     dispatch(getIdPrduct(state));
     Cart.map((item) => {

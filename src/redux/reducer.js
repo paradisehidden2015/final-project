@@ -1,29 +1,23 @@
-export const Product = (
-  state = { data: [], loading: false, error: "" },
-  { type, payload }
-) => {
+export const Product = (state = [], { type, payload }) => {
   switch (type) {
-    case "loading":
+    case "loadingProduct":
       return payload;
-    case "success":
+    case "successProduct":
       return payload;
-    case "failed":
+    case "failedProduct":
       return payload;
     default:
       return state;
   }
 };
 ////////////////////////////////////////////////////////////////////
-export const Profile = (
-  state = { data: [], loading: false, error: "" },
-  { type, payload }
-) => {
+export const Profile = (state = { data: [], error: "" }, { type, payload }) => {
   switch (type) {
-    case "loading":
+    case "loadingProfile":
       return payload;
-    case "success":
+    case "successProfile":
       return payload;
-    case "failed":
+    case "failedProfile":
       return payload;
     default:
       return state;
@@ -32,11 +26,11 @@ export const Profile = (
 ////////////////////////////////////////////////////////////////////
 export const IdPrduct = (state = [], { type, payload }) => {
   switch (type) {
-    case "loading":
+    case "loadingIdPrduct":
       return payload;
-    case "success":
+    case "successIdPrduct":
       return payload;
-    case "failed":
+    case "failedIdPrduct":
       return payload;
     default:
       return state;
@@ -58,11 +52,11 @@ export const Cart = (state = [], { type, payload }) => {
 /////////////////////////////////////////////////////////////////////////
 export const Checkout = (state = [], { type, payload }) => {
   switch (type) {
-    case "loading":
+    case "loadingCheckout":
       return payload;
-    case "success":
+    case "successCheckout":
       return payload;
-    case "failed":
+    case "failedCheckout":
       return payload;
     default:
       return state;
@@ -71,24 +65,24 @@ export const Checkout = (state = [], { type, payload }) => {
 /////////////////////////////////////////////////////////////////////////
 export const Orders = (state = [], { type, payload }) => {
   switch (type) {
-    case "loading":
+    case "loadingOrders":
       return payload;
-    case "success":
+    case "successOrders":
       return payload;
-    case "failed":
+    case "failedOrders":
       return payload;
     default:
       return state;
   }
 };
 /////////////////////////////////////////////////////////////////////////
-export const OrderId = (state = [], { type, payload }) => {
+export const OrderId = (state = {}, { type, payload }) => {
   switch (type) {
-    case "loading":
+    case "loadingOrderId":
       return payload;
-    case "success":
+    case "successOrderId":
       return payload;
-    case "failed":
+    case "failedOrderId":
       return payload;
     default:
       return state;
@@ -97,24 +91,40 @@ export const OrderId = (state = [], { type, payload }) => {
 /////////////////////////////////////////////////////////////////////////
 export const ChangeProfile = (state = [], { type, payload }) => {
   switch (type) {
-    case "loading":
+    case "loadingChangeProfile":
       return payload;
-    case "success":
+    case "successChangeProfile":
       return payload;
-    case "failed":
+    case "failedChangeProfile":
       return payload;
     default:
       return state;
   }
 };
 /////////////////////////////////////////////////////////////////////////
-export const UploadAvatar = (state = [], { type, payload }) => {
+export const UploadAvatar = (
+  state = { data: [], error: "" },
+  { type, payload }
+) => {
   switch (type) {
-    case "loading":
+    case "loadingUploadAvatar":
       return payload;
-    case "success":
+    case "successUploadAvatar":
       return payload;
-    case "failed":
+    case "failedUploadAvatar":
+      return payload;
+    default:
+      return state;
+  }
+};
+/////////////////////////////////////////////////////////////////////////
+export const ChangePassword = (state = [], { type, payload }) => {
+  switch (type) {
+    case "loadingChangePassword":
+      return payload;
+    case "successChangePassword":
+      return payload;
+    case "failedChangePassword":
       return payload;
     default:
       return state;

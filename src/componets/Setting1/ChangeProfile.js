@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast, ToastContainer } from "react-toastify";
 import "../../css/main.css";
 import { getChangeProfile } from "../../redux/action";
-function ChangeProfile({ User }) {
+function ChangeProfile() {
   const [Profileing, setProfileing] = useState([]);
   const dispatch = useDispatch();
   // const { data, error } = useSelector((state) => state.ChangeProfile);
@@ -27,7 +27,7 @@ function ChangeProfile({ User }) {
       dispatch(getChangeProfile(Profileing));
       toast.success("Profile edit successfully registered", {
         position: "top-center",
-        autoClose: 5000,
+        autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -38,7 +38,7 @@ function ChangeProfile({ User }) {
     } else {
       toast.error("Complete the information", {
         position: "top-center",
-        autoClose: 5000,
+        autoClose: 3000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -87,7 +87,7 @@ function ChangeProfile({ User }) {
             >
               <div className="form-control inline-block w-full">
                 <label className="label cursor-pointer inline-flex mr-10 w-20">
-                  <span className="label-text">female</span>
+                  <span className="label-text text-base mr-2">female</span>
                   <input
                     type="radio"
                     value="female"
@@ -103,7 +103,7 @@ function ChangeProfile({ User }) {
                   />
                 </label>
                 <label className="label cursor-pointer inline-flex w-20">
-                  <span className="label-text">male</span>
+                  <span className="label-text text-base mr-2">male</span>
                   <input
                     type="radio"
                     value="male"

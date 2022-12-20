@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import "../css/main.css";
 import { getCart, getCheckout } from "../redux/action";
 
-function Checkout({ orderArray, User, setQTY }) {
+function Checkout({ setQTY }) {
   const dispatch = useDispatch();
   const { Cart } = useSelector((state) => state);
 

@@ -17,94 +17,57 @@ import ChangeProfile from "./componets/Setting1/ChangeProfile";
 import UploadAvatar from "./componets/Setting1/UploadAvatar";
 import "./css/main.css";
 import NotFound from "./componets/NotFound";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getProfile } from "./redux/action";
+import { useDispatch, useSelector } from "react-redux";
 
 function App() {
-
-  let Storage = JSON.parse(localStorage.getItem("orderArray"));
-  const [orderArray, setorderArray] = useState(Storage ? Storage : []);
+  const dispatch = useDispatch();
+  const { data, error } = useSelector((state) => state.Profile);
+  /////////////////////////////////////////////////////////////////
+  const [login, setlogin] = useState(false);
+  const storageUser = JSON.parse(localStorage.getItem("User")) ?? false;
+  useEffect(() => {
+    storageUser && setlogin(true);
+  }, [storageUser]);
   const [QTY, setQTY] = useState(0);
-
-  const storageUser = JSON.parse(localStorage.getItem("User"));
-
-  const [User, setUser] = useState(storageUser?.length ? storageUser : []);
-  // storageUser?.length && setUser(storageUser);
-  const [login, setlogin] = useState(User?.length ? true : false);
-  // User?.length && setlogin(true);
+  ///////////////////////////////////////////////////////////////   Load
+  useEffect(() => {
+    dispatch(getProfile());
+  }, []);
+  /////////////////////////////////////////////////////////////
   return (
     <div className="App">
-      <Navbar
-        login={login}
-        orderArray={orderArray}
-        setUser={setUser}
-        setlogin={setlogin}
-        User={User}
-      />
+      <Navbar login={login} setlogin={setlogin} setQTY={setQTY} />
       <Routes>
-        <Route path="/" element={<Product User={User} />} />
+        <Route path="/" element={<Product />} />
         <Route path="/ProductId" element={<ProductId setQTY={setQTY} />} />
         <Route path="/Orders" element={login ? <Orders /> : <NotFound />} />
         <Route
           path="/Login"
-          element={
-            !login ? (
-              <Login setlogin={setlogin} setUser={setUser} User={User} />
-            ) : (
-              <NotFound />
-            )
-          }
+          element={!login ? <Login setlogin={setlogin} /> : <NotFound />}
         />
         <Route path="/SingUp" element={!login ? <SingUp /> : <NotFound />} />
-        <Route
-          path="/Profile"
-          element={login ? <Profile User={User} /> : <NotFound />}
-        />
+        <Route path="/Profile" element={login ? <Profile /> : <NotFound />} />
         <Route path="/Address" element={login ? <Address /> : <NotFound />} />
         <Route
           path="/Checkout"
-          element={
-            login ? (
-              <Checkout
-                setorderArray={setorderArray}
-                orderArray={orderArray}
-                User={User}
-                setQTY={setQTY}
-              />
-            ) : (
-              <NotFound />
-            )
-          }
+          element={login ? <Checkout setQTY={setQTY} /> : <NotFound />}
         />
-        <Route
-          path="/Cart"
-          element={
-            <Cart
-              setQTY={setQTY}
-              login={login}
-              orderArray={orderArray}
-              setorderArray={setorderArray}
-            />
-          }
-        />
+        <Route path="/Cart" element={<Cart setQTY={setQTY} login={login} />} />
         <Route path="/OrderId" element={login ? <OrderId /> : <NotFound />} />
         <Route path="/Setting" element={login ? <Setting /> : <NotFound />}>
           <Route
             path="ChangeProfile"
-            element={login ? <ChangeProfile User={User} /> : <NotFound />}
+            element={login ? <ChangeProfile /> : <NotFound />}
           />
           <Route
             path="ChangePassword"
-            element={login ? <ChangePassword User={User} /> : <NotFound />}
+            element={login ? <ChangePassword /> : <NotFound />}
           />
           <Route
             path="UploadAvatar"
-            element={
-              login ? (
-                <UploadAvatar User={User} setUser={setUser} />
-              ) : (
-                <NotFound />
-              )
-            }
+            element={login ? <UploadAvatar setQTY={setQTY} /> : <NotFound />}
           />
         </Route>
         <Route path="*" element={<NotFound />} />

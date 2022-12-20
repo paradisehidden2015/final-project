@@ -5,13 +5,15 @@ import "../css/main.css";
 import { getProfile } from "../redux/action";
 
 function Profile() {
-
   const { Profile } = useSelector((state) => state);
   const dispatch = useDispatch();
   const get = Profile.data.user ?? false;
   useEffect(() => {
     dispatch(getProfile());
   }, []);
+  //////////////////////////////////////////////////////////////   get localStorage
+  const storageUser = JSON.parse(localStorage.getItem("User"));
+  //////////////////////////////////////////////////////////////
   return (
     <div className="w-full flex justify-center">
       <div className="w-full sm:w-4/6 lg:w-3/6 2xl:w-2/6">
@@ -19,20 +21,20 @@ function Profile() {
           <div className="card-body">
             <div className="avatar mb-10 flex justify-center transition duration-700">
               <div className="w-24 rounded-full ring ring-black hover:scale-125 hover:ring-red-900 ring-offset-base-100 ring-offset-2 transition duration-700">
-                <img src={get ? get.image : ""} />
+                <img src={get.image ? get.image : storageUser.image} />
               </div>
             </div>
             <div className="block">
               <div className="flex justify-start mb-5">
                 <label>User Name : </label>
                 <label className="ml-2">
-                  {get ? get.username : ""}
+                  {get.username ? get.username : storageUser.username}
                 </label>
               </div>
               <div className="flex justify-start mb-5">
                 <label>Email : </label>
                 <label className="ml-2">
-                  {get ? get.email : ""}
+                  {get.email ? get.email : storageUser.email}
                 </label>
               </div>
               <div className="flex justify-start mb-5">

@@ -1,27 +1,30 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import "../../css/main.css";
-import { getUploadAvatar } from "../../redux/action";
+import { getProfile, getUploadAvatar } from "../../redux/action";
 
-function UploadAvatar({ setUser, User }) {
+function UploadAvatar({ setQTY }) {
   const [Pic, setPic] = useState(null);
   const dispatch = useDispatch();
   const { data, error } = useSelector((state) => state.UploadAvatar);
-
+  const { Profile } = useSelector((state) => state);
   const req = () => {
     if (Pic) {
-      try {
-        dispatch(getUploadAvatar(Pic));
+      dispatch(getUploadAvatar(Pic));
+      if (data) {
+        localStorage.setItem("User", JSON.stringify(Profile.data.user));
         Swal.fire({
           position: "center",
           icon: "success",
           title: "Profile picture changed successfully",
           showConfirmButton: false,
-          timer: 3000,
+          timer: 1000,
         });
-      } catch (error) {
+        setTimeout(() => {
+          dispatch(getProfile());
+        }, 3000);
+      } else if (error) {
         Swal.fire({
           position: "center",
           icon: "error",

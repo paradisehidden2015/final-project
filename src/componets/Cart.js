@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import "../css/main.css";
 import { getCart } from "../redux/action";
 
-function Cart({ login, orderArray, setorderArray, setQTY }) {
+function Cart({ login, setQTY }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { Cart } = useSelector((state) => state);

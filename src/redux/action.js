@@ -1,35 +1,33 @@
 import axios from "axios";
-import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 //////////////////get localStorage
 const storageUser = JSON.parse(localStorage.getItem("User"));
-const token = storageUser ? storageUser[0]?.token : storageUser;
+const token = storageUser ? storageUser?.token : storageUser;
 
 //////////////////////////////////////////////////////////////////////////////
 export const getProduct = () => async (dispatch, getState) => {
   dispatch({
-    type: "loading",
-    payload: { data: [], error: "", loading: true },
+    type: "loadingProduct",
+    payload: [],
   });
   try {
     const { data } = await axios.get("http://kzico.runflare.run/product/");
-
     dispatch({
-      type: "success",
-      payload: { data: data, error: "", loading: false },
+      type: "successProduct",
+      payload: data,
     });
   } catch (error) {
     dispatch({
-      type: "failed",
-      payload: { data: [], error: error.message, loading: false },
+      type: "failedProduct",
+      payload: [],
     });
   }
 };
 //////////////////////////////////////////////////////////////////////////////
 export const getProfile = () => async (dispatch, getState) => {
   dispatch({
-    type: "loading",
-    payload: { data: [], error: "", loading: true },
+    type: "loadingProfile",
+    payload: { data: [], error: "" },
   });
   try {
     const { data } = await axios.get("http://kzico.runflare.run/user/profile", {
@@ -39,34 +37,35 @@ export const getProfile = () => async (dispatch, getState) => {
     });
 
     dispatch({
-      type: "success",
-      payload: { data: data, error: "", loading: false },
+      type: "successProfile",
+      payload: { data: data, error: "" },
     });
   } catch (error) {
+    localStorage.removeItem("User");
     dispatch({
-      type: "failed",
-      payload: { data: [], error: error.message, loading: false },
+      type: "failedProfile",
+      payload: { data: [], error: error.message },
     });
   }
 };
 ///////////////////////////////////////////////////////////////////////////////
 export const getIdPrduct = (product) => async (dispatch, getState) => {
   dispatch({
-    type: "loading",
-    payload: { data: [], error: "", loading: true },
+    type: "loadingIdPrduct",
+    payload: [],
   });
   try {
     const { data } = await axios.get(
       `http://kzico.runflare.run/product/${product}`
     );
     dispatch({
-      type: "success",
-      payload: { data: data, error: "", loading: false },
+      type: "successIdPrduct",
+      payload: data,
     });
   } catch (error) {
     dispatch({
-      type: "failed",
-      payload: { data: [], error: error.message, loading: false },
+      type: "failedIdPrduct",
+      payload: [],
     });
   }
 };
@@ -127,8 +126,8 @@ export const getCart = (type, product, data) => (dispatch, getState) => {
 //////////////////////////////////////////////////////////////////////////////
 export const getCheckout = (orderItems, FinalOrder) => async (dispatch) => {
   dispatch({
-    type: "loading",
-    payload: { data: [], error: "", loading: true },
+    type: "loadingloadingCheckout",
+    payload: { data: [], error: "" },
   });
   try {
     const { data } = await axios.post(
@@ -153,12 +152,12 @@ export const getCheckout = (orderItems, FinalOrder) => async (dispatch) => {
     );
 
     dispatch({
-      type: "success",
-      payload: { data: data, error: "", loading: false },
+      type: "successloadingCheckout",
+      payload: { data: data, error: "" },
     });
     Swal.fire({
       position: "center",
-      icon: "success",
+      icon: "successloadingCheckout",
       title: "Your purchase has been successfully registered",
       showConfirmButton: false,
       timer: 3000,
@@ -166,7 +165,7 @@ export const getCheckout = (orderItems, FinalOrder) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: "failed",
-      payload: { data: [], error: error.message, loading: false },
+      payload: { data: [], error: error.message },
     });
     Swal.fire({
       position: "center",
@@ -180,8 +179,8 @@ export const getCheckout = (orderItems, FinalOrder) => async (dispatch) => {
 //////////////////////////////////////////////////////////////////////////////
 export const getOrders = () => async (dispatch, getState) => {
   dispatch({
-    type: "loading",
-    payload: { data: [], error: "", loading: true },
+    type: "loadingOrders",
+    payload: { data: [], error: "" },
   });
   try {
     const { data } = await axios.get("http://kzico.runflare.run/order/", {
@@ -190,21 +189,21 @@ export const getOrders = () => async (dispatch, getState) => {
       },
     });
     dispatch({
-      type: "success",
-      payload: { data: data, error: "", loading: false },
+      type: "successOrders",
+      payload: { data: data, error: "" },
     });
   } catch (error) {
     dispatch({
-      type: "failed",
-      payload: { data: [], error: error.message, loading: false },
+      type: "failedOrders",
+      payload: { data: [], error: error.message },
     });
   }
 };
 //////////////////////////////////////////////////////////////////////////////
 export const getOrderId = (id) => async (dispatch, getState) => {
   dispatch({
-    type: "loading",
-    payload: { data: [], error: "", loading: true },
+    type: "loadingOrderId",
+    payload: { data: {}, error: "" },
   });
   try {
     const { data } = await axios.get(`http://kzico.runflare.run/order/${id}`, {
@@ -213,22 +212,21 @@ export const getOrderId = (id) => async (dispatch, getState) => {
       },
     });
     dispatch({
-      type: "success",
-      payload: { data: data, error: "", loading: false },
+      type: "successOrderId",
+      payload: { data: data, error: "" },
     });
-    // console.log(getState().OrderId.data)
   } catch (error) {
     dispatch({
-      type: "failed",
-      payload: { data: [], error: error.message, loading: false },
+      type: "failedOrderId",
+      payload: { data: {}, error: error.message },
     });
   }
 };
 //////////////////////////////////////////////////////////////////////////////
 export const getChangeProfile = (Profileing) => async (dispatch, getState) => {
   dispatch({
-    type: "loading",
-    payload: { data: [], error: "", loading: true },
+    type: "loadingChangeProfile",
+    payload: { data: [], error: "" },
   });
   try {
     const { data } = await axios.put(
@@ -247,21 +245,21 @@ export const getChangeProfile = (Profileing) => async (dispatch, getState) => {
       }
     );
     dispatch({
-      type: "success",
-      payload: { data: data, error: "", loading: false },
+      type: "successChangeProfile",
+      payload: { data: data, error: "" },
     });
   } catch (error) {
     dispatch({
-      type: "failed",
-      payload: { data: [], error: error.message, loading: false },
+      type: "failedChangeProfile",
+      payload: { data: [], error: error.message },
     });
   }
 };
 //////////////////////////////////////////////////////////////////////////////
 export const getUploadAvatar = (Pic) => async (dispatch, getState) => {
   dispatch({
-    type: "loading",
-    payload: { data: [], error: "", loading: true },
+    type: "loadingUploadAvatar",
+    payload: { data: [], error: "" },
   });
   try {
     const formData = new FormData();
@@ -276,13 +274,44 @@ export const getUploadAvatar = (Pic) => async (dispatch, getState) => {
       }
     );
     dispatch({
-      type: "success",
-      payload: { data: data, error: "", loading: false },
+      type: "successUploadAvatar",
+      payload: { data: data, error: "" },
     });
   } catch (error) {
     dispatch({
-      type: "failed",
-      payload: { data: [], error: error.message, loading: false },
+      type: "failedUploadAvatar",
+      payload: { data: [], error: error.message },
     });
   }
 };
+//////////////////////////////////////////////////////////////////////////////
+export const getChangePassword =
+  (OldPass, NewPass) => async (dispatch, getState) => {
+    dispatch({
+      type: "loadingChangePassword",
+      payload: { data: [], error: "" },
+    });
+    try {
+      const { data } = await axios.put(
+        "http://kzico.runflare.run/user/change-password",
+        {
+          old_password: OldPass,
+          new_password: NewPass,
+        },
+        {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      dispatch({
+        type: "successChangePassword",
+        payload: { data: data, error: "" },
+      });
+    } catch (error) {
+      dispatch({
+        type: "failedChangePassword",
+        payload: { data: [], error: error },
+      });
+    }
+  };

@@ -9461,8 +9461,12 @@ html {
   margin-top: 15rem;
 }
 
-.mt-3 {
-  margin-top: 0.75rem;
+.mr-20 {
+  margin-right: 5rem;
+}
+
+.ml-14 {
+  margin-left: 3.5rem;
 }
 
 .mr-5 {
@@ -9509,6 +9513,14 @@ html {
   margin-top: 18rem;
 }
 
+.mr-10 {
+  margin-right: 2.5rem;
+}
+
+.mt-3 {
+  margin-top: 0.75rem;
+}
+
 .ml-96 {
   margin-left: 24rem;
 }
@@ -9517,16 +9529,20 @@ html {
   margin-top: 0.5rem;
 }
 
-.mr-6 {
-  margin-right: 1.5rem;
+.mr-32 {
+  margin-right: 8rem;
 }
 
-.ml-6 {
-  margin-left: 1.5rem;
+.ml-10 {
+  margin-left: 2.5rem;
 }
 
-.mr-10 {
-  margin-right: 2.5rem;
+.mr-8 {
+  margin-right: 2rem;
+}
+
+.mr-12 {
+  margin-right: 3rem;
 }
 
 .box-border {
@@ -9729,14 +9745,6 @@ html {
   width: 1.5rem;
 }
 
-.w-52 {
-  width: 13rem;
-}
-
-.w-10 {
-  width: 2.5rem;
-}
-
 .w-4\/12 {
   width: 33.333333%;
 }
@@ -9765,16 +9773,12 @@ html {
   width: 20rem;
 }
 
-.w-6\/12 {
-  width: 50%;
+.w-52 {
+  width: 13rem;
 }
 
-.w-28 {
-  width: 7rem;
-}
-
-.w-2 {
-  width: 0.5rem;
+.flex-none {
+  flex: none;
 }
 
 .flex-shrink {
@@ -10690,9 +10694,9 @@ html {
   background-color: rgb(55 48 163 / var(--tw-bg-opacity));
 }
 
-.bg-slate-800 {
+.bg-base-100 {
   --tw-bg-opacity: 1;
-  background-color: rgb(30 41 59 / var(--tw-bg-opacity));
+  background-color: hsl(var(--b1) / var(--tw-bg-opacity));
 }
 
 .bg-gray-800 {
@@ -10705,6 +10709,11 @@ html {
   background-color: rgb(15 23 42 / var(--tw-bg-opacity));
 }
 
+.bg-slate-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(30 41 59 / var(--tw-bg-opacity));
+}
+
 .bg-black {
   --tw-bg-opacity: 1;
   background-color: rgb(0 0 0 / var(--tw-bg-opacity));
@@ -10713,6 +10722,11 @@ html {
 .bg-\[rgb\(255\2c 0\2c 0\)\] {
   --tw-bg-opacity: 1;
   background-color: rgb(255 0 0 / var(--tw-bg-opacity));
+}
+
+.bg-base-200 {
+  --tw-bg-opacity: 1;
+  background-color: hsl(var(--b2, var(--b1)) / var(--tw-bg-opacity));
 }
 
 .bg-gradient-to-r {
@@ -10816,6 +10830,10 @@ html {
 
 .bg-origin-content {
   background-origin: content-box;
+}
+
+.fill-current {
+  fill: currentColor;
 }
 
 .object-contain {
@@ -10967,13 +10985,13 @@ html {
   line-height: 2rem;
 }
 
-.text-\[100px\] {
-  font-size: 100px;
-}
-
 .text-base {
   font-size: 1rem;
   line-height: 1.5rem;
+}
+
+.text-\[100px\] {
+  font-size: 100px;
 }
 
 .text-xs {
@@ -11726,6 +11744,10 @@ html {
 
   .sm\:-ml-56 {
     margin-left: -14rem;
+  }
+
+  .sm\:mr-20 {
+    margin-right: 5rem;
   }
 
   .sm\:flex {

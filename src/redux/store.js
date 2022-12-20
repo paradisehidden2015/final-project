@@ -14,6 +14,7 @@ import {
   OrderId,
   ChangeProfile,
   UploadAvatar,
+  ChangePassword,
 } from "./reducer";
 const middleWare = [thunk];
 const reducers = combineReducers({
@@ -26,6 +27,7 @@ const reducers = combineReducers({
   OrderId,
   ChangeProfile,
   UploadAvatar,
+  ChangePassword,
 });
 const orderArry = JSON.parse(localStorage.getItem("orderArray"))
   ? JSON.parse(localStorage.getItem("orderArray"))

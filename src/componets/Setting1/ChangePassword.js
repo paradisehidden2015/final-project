@@ -1,9 +1,12 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import "../../css/main.css";
+import { getChangePassword } from "../../redux/action";
 
-function ChangePassword({ User }) {
+function ChangePassword() {
+  const dispatch = useDispatch();
+  const { data, error } = useSelector((state) => state.ChangePassword);
   const [OldPassword, setOldPassword] = useState({
     value: "",
     error: "Old Password is invalid",
@@ -19,25 +22,11 @@ function ChangePassword({ User }) {
     error: "Confirm New Password is invalid",
     isTouched: false,
   });
-  const inputOldPass = document.querySelector("#OldPassword");
-  const inputNewPass = document.querySelector("#NewPassword");
-  const inputConfirmpass = document.querySelector("#ConfirmPassword");
   const req = async () => {
-    if ((inputOldPass.value, inputNewPass.value, inputConfirmpass.value)) {
-      if (inputNewPass.value === inputConfirmpass.value) {
-        try {
-          const { data } = await axios.put(
-            "http://kzico.runflare.run/user/change-password",
-            {
-              old_password: inputOldPass.value,
-              new_password: inputNewPass.value,
-            },
-            {
-              headers: {
-                authorization: `Bearer ${User[0].token}`,
-              },
-            }
-          );
+    if ((OldPassword.value, NewPassword.value, ConfirmPassword.value)) {
+      if (NewPassword.value === ConfirmPassword.value) {
+        dispatch(getChangePassword(OldPassword.value, NewPassword.value));
+        if (data) {
           Swal.fire({
             position: "center",
             icon: "success",
@@ -45,8 +34,7 @@ function ChangePassword({ User }) {
             showConfirmButton: false,
             timer: 3000,
           });
-        } catch (error) {
-          // console.log(error.response.data);
+        } else if (error) {
           Swal.fire({
             position: "center",
             icon: "error",

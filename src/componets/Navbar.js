@@ -1,32 +1,19 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../css/main.css";
-import { getProfile } from "../redux/action";
 
-function Navbar({ login, orderArray, setUser, User, setlogin }) {
+function Navbar({ login, setlogin, setQTY }) {
   const navigate = useNavigate();
-  const { data, error } = useSelector((state) => state.Profile);
   const dispatch = useDispatch();
-  const get = data.user ?? false;
-  ///////////////////////////////////////////////////////////////   Load
-  useEffect(() => {
-    dispatch(getProfile());
-  }, []);
-  if (error) {
-    setlogin(false);
-  }
-  //////////////////////////////////////////////////////////////   get localStorage
-  const storageorder = JSON.parse(localStorage.getItem("orderArray"));
-  const storageUser = JSON.parse(localStorage.getItem("User"));
-  const get1 = storageUser[0] ?? false;
+  const { data } = useSelector((state) => state.Profile);
 
+  //////////////////////////////////////////////////////////////   get localStorage
+  const storageUser = JSON.parse(localStorage.getItem("User"));
+  const storageorder = JSON.parse(localStorage.getItem("orderArray"));
   ///////////////////////////////////////////////////////////////   logout
   function logout() {
     navigate("/");
     setlogin(false);
-    setUser([]);
     localStorage.removeItem("User");
   }
   //////////////////////////////////////////////////////////////  qty product
@@ -53,10 +40,7 @@ function Navbar({ login, orderArray, setUser, User, setlogin }) {
             className="dropdown dropdown-end"
             onClick={() => navigate("/Cart")}
           >
-            <label
-              // tabIndex={orderArray.length ? 0 : ""}
-              className="btn btn-ghost btn-circle"
-            >
+            <label className="btn btn-ghost btn-circle">
               <div className="indicator">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -82,43 +66,67 @@ function Navbar({ login, orderArray, setUser, User, setlogin }) {
               </div>
             </label>
           </div>
-          <div className="dropdown dropdown-end">
-            <label
-              tabIndex={login ? 0 : ""}
-              onClick={() => !login && navigate("/Login")}
-              className="btn btn-ghost sm:mx-10"
-            >
-              <div className="text-lg">
-                {login ? get1.username : "Login / Singup"}
-              </div>
-            </label>
-            <ul
-              tabIndex={0}
-              className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-slate-800 rounded-box w-52 text-xl"
-            >
-              <li>
-                <a onClick={() => navigate("/profile")}>Profile</a>
-              </li>
-              <li>
-                <a onClick={() => navigate("/Orders")}>Orders</a>
-              </li>
-              <li>
-                <a onClick={() => navigate("/setting/ChangeProfile")}>
-                  Setting
+
+          <div className="flex-none mr-12 sm:mr-20 sm:ml-10">
+            <ul className="menu menu-horizontal w-20">
+              <li
+                className="rounded-lg"
+                tabIndex={0}
+                onClick={() => !login && navigate("/Login")}
+              >
+                <a className="rounded-lg text-xl font-semibold">
+                  {login
+                    ? data?.user?.username
+                      ? data?.user?.username
+                      : storageUser?.username
+                    : "Login / Singup"}
+                  {login && (
+                    <svg
+                      className="fill-current"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+                    </svg>
+                  )}
                 </a>
-              </li>
-              <li>
-                <a onClick={() => logout()}>Logout</a>
+                {login ? (
+                  <ul className="p-2 bg-base-200 text-base w-40 flex-none">
+                    <li>
+                      <a onClick={() => navigate("/profile")}>Profile</a>
+                    </li>
+                    <li>
+                      <a onClick={() => navigate("/Orders")}>Orders</a>
+                    </li>
+                    <li>
+                      <a onClick={() => navigate("/setting/ChangeProfile")}>
+                        Setting
+                      </a>
+                    </li>
+                    <li>
+                      <a onClick={() => logout()}>Logout</a>
+                    </li>
+                  </ul>
+                ) : (
+                  ""
+                )}
               </li>
             </ul>
           </div>
+
           {login ? (
             <label className="btn btn-ghost btn-circle avatar mr-5">
               <div
-                className="w-10 rounded-full"
+                className="w-20 rounded-full"
                 onClick={() => navigate("/profile")}
               >
-                <img src={get1.image} />
+                <img
+                  src={
+                    data?.user?.image ? data?.user?.image : storageUser.image
+                  }
+                />
               </div>
             </label>
           ) : (
